@@ -1,0 +1,7 @@
+
+spring:
+  datasource:
+    driver-class-name: org.sqlite.JDBC
+    url: jdbc:sqlite::resource:tdd.sqlite
+mybatis:
+  mapper-locations: mapper/*.xml
