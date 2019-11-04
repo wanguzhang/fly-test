@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fly.test.module.user.dao.UserDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="userDO.id">
+        insert into user (username, password)values (#{userDO.username},#{userDO.password});
+    </insert>
+
+    <delete id="deleteUserById">
+        delete from user where id=#{id};
+    </delete>
+
+    <select id="getUserId" resultType="com.fly.test.module.user.entity.UserDO">
+        select id,username,password from  user where id =#{id};
+    </select>
+</mapper>
