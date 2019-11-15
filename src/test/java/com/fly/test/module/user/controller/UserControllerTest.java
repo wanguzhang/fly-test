@@ -37,7 +37,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 @SpringBootTest(classes = {SpringTestApplication.class})
 // 将需要模拟的工具类加入其中
 @PrepareForTest(value={HttpUtil.class})
-// 若报错信息中，出现没有实例化对象，将报名写到下面中
+// MockClassLoader 加载类忽略 PowerMockIgnore 配置的包，让系统类加载器加载，当出现类加载报错的时候，在这里排除包
 @PowerMockIgnore({"javax.management.*", "javax.net.ssl.*"})
 public class UserControllerTest {
 
