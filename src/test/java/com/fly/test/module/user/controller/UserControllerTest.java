@@ -81,7 +81,7 @@ public class UserControllerTest {
     public void insert() throws Exception {
         Mockito.when(userService.insert(userDTO)).thenReturn(userDO);
         mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"username\":\"username\",\"password\":\"password\"}")
         ).andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
@@ -97,7 +97,7 @@ public class UserControllerTest {
     @Test
     public void deleteUser() throws Exception {
         Mockito.when(userService.deleteUserById(1)).thenReturn(1);
-        mockMvc.perform(MockMvcRequestBuilders.delete("/users/1").contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/users/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
         Mockito.verify(userService,Mockito.times(1)).deleteUserById(1);
     }
@@ -109,7 +109,7 @@ public class UserControllerTest {
     @Test
     public void getUserById() throws Exception {
         Mockito.when(userService.getUserId(1)).thenReturn(userDO);
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/1").contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/1").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.username").value("username"))
