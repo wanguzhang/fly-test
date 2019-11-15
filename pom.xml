@@ -16,9 +16,40 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <hutool.all.version>5.0.4</hutool.all.version>
+        <mybatis.starter.verison>2.1.1</mybatis.starter.verison>
+        <fast.version>1.2.62</fast.version>
+        <powermock.version>2.0.4</powermock.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/cn.hutool/hutool-all -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.all.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fast.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
@@ -30,7 +61,7 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.1</version>
+            <version>${mybatis.starter.verison}</version>
         </dependency>
 
         <dependency>
@@ -49,8 +80,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

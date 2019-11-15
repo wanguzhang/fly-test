@@ -39,4 +39,25 @@ public interface UserService {
      */
 
     UserDO getUserId(Integer id);
+
+    /***
+     * 调用远程接口的用户信息
+     * @author 张攀钦
+     * @date 2019/11/15-14:36
+     * @title getRemoteUser
+     * @param id
+     * @return com.fly.test.module.user.entity.UserDO
+     *
+     */
+
+    UserDO getRemoteUser(Integer id);
+
+    /***
+     * 主要用来测试无用数据
+     * @author 张攀钦
+     * @date 2019/11/15-14:38
+     * @title reruenVoid
+     *
+     */
+    void returnVoid();
 }

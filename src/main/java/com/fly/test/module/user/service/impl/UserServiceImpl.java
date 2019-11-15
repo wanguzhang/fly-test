@@ -1,5 +1,7 @@
 package com.fly.test.module.user.service.impl;
 
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
 import com.fly.test.module.user.dao.UserDao;
 import com.fly.test.module.user.entity.UserDO;
 import com.fly.test.module.user.entity.UserDTO;
@@ -19,6 +21,34 @@ public class UserServiceImpl
 
     @Autowired
     private UserDao userDao;
+
+    /***
+     * 调用远程接口的用户信息
+     * @author 张攀钦
+     * @date 2019/11/15-14:36
+     * @title getRemoteUser
+     * @param id
+     * @return com.fly.test.module.user.entity.UserDO
+     *
+     */
+    @Override
+    public UserDO getRemoteUser(Integer id) {
+        String s = HttpUtil.get("http://localhost:8080");
+        return JSON.parseObject(s, UserDO.class);
+    }
+
+    /***
+     * 主要用来测试无用数据
+     * @author 张攀钦
+     * @date 2019/11/15-14:38
+     * @title reruenVoid
+     *
+     */
+    @Override
+    public void returnVoid() {
+
+        System.out.println("双11 买了好多东西");
+    }
 
     @Override
     public UserDO insert(UserDTO userDTO) {

@@ -1,5 +1,8 @@
 package com.fly.test.module.user.service.impl;
 
+import cn.hutool.http.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.fly.test.SpringTestApplication;
 import com.fly.test.module.user.dao.UserDao;
 import com.fly.test.module.user.entity.UserDO;
 import com.fly.test.module.user.entity.UserDTO;
@@ -10,20 +13,30 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.modules.junit4.PowerMockRunnerDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 /**
  * @author 张攀钦
  * @date 2019-11-04-00:14
  * @description
  */
-@RunWith(SpringRunner.class)
-@SpringBootTest
+
+@RunWith(PowerMockRunner.class)
+@PowerMockRunnerDelegate(SpringRunner.class)
+// 带有@SpringBootApplication 的主类
+@SpringBootTest(classes = {SpringTestApplication.class})
+// 将需要模拟的工具类加入其中
+@PrepareForTest(value={HttpUtil.class})
+// 若报错信息中，出现没有实例化对象，将报名写到下面中
+@PowerMockIgnore({"javax.management.*", "javax.net.ssl.*"})
 public class UserServiceImplTest {
 
     @Autowired
@@ -91,5 +104,18 @@ public class UserServiceImplTest {
         Mockito.when(userDao.getUserId(1)).thenReturn(userDO);
         final UserDO userId = userService.getUserId(1);
         Assert.assertEquals(userId,userDO);
+    }
+
+    @Test
+    public void getRemoteUser() {
+        PowerMockito.mockStatic(HttpUtil.class);
+        Mockito.when(HttpUtil.get("http://localhost:8080")).thenReturn(JSON.toJSONString(userDO));
+        UserDO remoteUser = userService.getRemoteUser(1);
+        Assert.assertEquals(userDO,remoteUser);
+    }
+
+    @Test
+    public void returnVoid() {
+        userService.returnVoid();
     }
 }
