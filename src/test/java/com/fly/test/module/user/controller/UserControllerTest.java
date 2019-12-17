@@ -3,7 +3,6 @@ package com.fly.test.module.user.controller;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.fly.test.SpringTestApplication;
-import com.fly.test.common.util.exception.BusinessException;
 import com.fly.test.module.user.entity.UserDO;
 import com.fly.test.module.user.entity.UserDTO;
 import com.fly.test.module.user.service.UserService;
@@ -22,9 +21,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author 张攀钦
@@ -116,26 +118,6 @@ public class UserControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.password").value("password"));
 
     }
-
-    /**
-     * 模拟一个异常显示,业务逻辑
-     * 传入正常参数 1 ，单测正常逻辑，不抛出异常，接口状态码为 200
-     */
-    @Test
-    public void throwException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/exception/1").contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
-    }
-
-    /**
-     * 模拟一个异常显示,业务逻辑
-     * 传入异常参数 2222 ，单测抛出异常，接口状态码
-     */
-    @Test(expected = BusinessException.class)
-    public void throwExceptionThrowException() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/exception/2222").contentType(MediaType.APPLICATION_JSON_UTF8))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
-    }
     /**
      * 在 controller 调用静态方法示例展示,调用 http 请求 http://localhost:8080/1
      */
@@ -144,7 +126,7 @@ public class UserControllerTest {
         PowerMockito.mockStatic(HttpUtil.class);
         Integer id=1;
         Mockito.when(HttpUtil.get("http://localhost:8080/"+id)).thenReturn(JSON.toJSONString(userDO));
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/static-method/{id}",id).contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/static-method/{id}",id).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.id").value(userDO.getId()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.data.password").value(userDO.getPassword()))
@@ -158,8 +140,23 @@ public class UserControllerTest {
     @Test
     public void noReturn() throws Exception {
         Mockito.doNothing().when(userService).returnVoid();
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/no-return").contentType(MediaType.APPLICATION_JSON_UTF8))
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/no-return").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200));
         Mockito.verify(userService,Mockito.times(1)).returnVoid();
+    }
+
+    @Test
+    public void uploadFile() throws Exception {
+        MockMultipartHttpServletRequestBuilder multipart = MockMvcRequestBuilders.multipart("/file");
+        String fileContent="测试内容";
+        String type="测试";
+        // 此处如果是别类型的文件，可以在 src/test/resources 放入对应的文件，
+        // 然后读取这个文件的全部字节，构建 MockMultipartFile
+        multipart.file("file",fileContent.getBytes(StandardCharsets.UTF_8));
+        multipart.param("type",type);
+        mockMvc.perform(multipart)
+                .andExpect(MockMvcResultMatchers.jsonPath("$.code").value(200))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.content").value(fileContent))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.type").value(type));
     }
 }

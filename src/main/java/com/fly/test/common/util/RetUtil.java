@@ -33,7 +33,10 @@ public class RetUtil<T> implements Serializable {
         ok.setData(t);
         return ok;
     }
-
+    public static <T> RetUtil<T> build() {
+        final RetUtil<T> ok = new RetUtil<>();
+        return ok;
+    }
     public static <T> RetUtil<T> build(T t) {
         final RetUtil<T> ok = new RetUtil<>();
         ok.setData(t);

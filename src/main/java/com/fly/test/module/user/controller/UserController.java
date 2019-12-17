@@ -3,12 +3,17 @@ package com.fly.test.module.user.controller;
 import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.fly.test.common.util.RetUtil;
-import com.fly.test.common.util.exception.BusinessException;
+import com.fly.test.module.user.entity.UploadFileDTO;
 import com.fly.test.module.user.entity.UserDO;
 import com.fly.test.module.user.entity.UserDTO;
+import com.fly.test.module.user.entity.vo.UploadVO;
 import com.fly.test.module.user.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author 张攀钦
@@ -51,20 +56,6 @@ public class UserController {
         return RetUtil.ok(userDO);
     }
 
-
-    /**
-     * 模拟一个异常显示,业务逻辑，用于演示怎么写检查异常单测
-     */
-    @GetMapping(value = "/users/exception/{id}")
-    public RetUtil throwException(@PathVariable Integer id) throws BusinessException {
-        // 花钱超过这个数，报错
-        int money=1111;
-
-        if(id>money){
-            throw new BusinessException("双 11 剁手都不够",40001);
-        }
-        return RetUtil.ok();
-    }
     
     /**
      * 在 controller 调用静态方法示例展示
@@ -83,5 +74,14 @@ public class UserController {
     public RetUtil noReturn(){
         userService.returnVoid();
         return RetUtil.ok();
+    }
+
+    @PostMapping(value = "/file")
+    public RetUtil<UploadVO> uploadFile(UploadFileDTO uploadFileDTO) throws IOException {
+        MultipartFile file = uploadFileDTO.getFile();
+        byte[] bytes = file.getBytes();
+        String s = new String(bytes, StandardCharsets.UTF_8);
+        UploadVO build = UploadVO.builder().content(s).type(uploadFileDTO.getType()).build();
+        return RetUtil.ok(build);
     }
 }
